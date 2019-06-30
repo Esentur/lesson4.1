@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Main {
 
-    public static int[] health = {1500, 220, 230, 240, 250, 600, 200, 225, 210};//0й элемент это босс
+    public static int[] health = {1700, 220, 230, 240, 250, 600, 200, 225, 210};//0й элемент это босс
     public static int[] hits = {55, 20, 20, 20, 20, 5, 20, 20, 20};
     public static String[] hitTypes = {"Физический ", "физический ", "магический ", "ментальный", "медицинский",
             "танковый", "ловкач", "берсерк", "тор"};//
