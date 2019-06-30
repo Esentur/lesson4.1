@@ -1,10 +1,12 @@
 package com.company;
+
 import java.util.Random;
 
 public class Main {
-    public static int[] health = {1100, 250, 250, 250, 250, 500};//0й элемент это босс
-    public static int[] hits = {55, 20, 20, 20, 20, 5};
-    public static String[] hitTypes = {"Физический ", "физический ", "магический ", "ментальный", "медицинский", "танковый"};//
+
+    public static int[] health = {1200, 250, 250, 250, 250, 500, 200};//0й элемент это босс
+    public static int[] hits = {55, 20, 20, 20, 20, 5, 20};
+    public static String[] hitTypes = {"Физический ", "физический ", "магический ", "ментальный", "медицинский", "танковый", "ловкач"};//
 
     public static void main(String[] args) {
         int i = 1;
@@ -16,11 +18,12 @@ public class Main {
             System.out.println("Живой медик лечит каждого ЖИВОГО героя на 15ед. , кроме себя");
             printStatistics();
             i++;
+
         }
     }
 
     public static void round() {
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 6; i++) {
             if (health[0] > 0) {
                 if (health[i] > 0) {//если герой жив--->
                     int damagedHealthOfBoss = playerHit(i);//нанеси урон боссу
@@ -35,13 +38,22 @@ public class Main {
             }
         }
         if (health[0] > 0) { // если босс жив после атаки--->
-            for (int i = 1; i <= 5; i++) {
-                if (hitTypes[0].equals(hitTypes[5])) {//--->
+            for (int i = 1; i <= 6; i++) {
+                if (hitTypes[0].equals(hitTypes[5])) {//случай супер-удара танка--->
                     int tanksHelp = 25;
                     if (health[i] == 5) {
-                        health[5] = bossHit(5) - tanksHelp * 4;//танк еще забирает часть урона(25 из 55) по другим себе
+                        health[5] = bossHit(5) - tanksHelp * 5;//танк еще забирает часть урона(25 из 55) по другим себе
                     } else {
                         health[i] = bossHit(i) + tanksHelp;// и тогда босс наносит остальным по 10ед. урона
+                    }
+                } else if (hitTypes[0].equals(hitTypes[6])) {//случай супер-удара ловкача--->
+                    if (health[i] <= 0) {
+                        health[i] = 0;
+                    }
+                    if (health[i] == health[6]) {//ловкач не получает урон от босса
+                        health[i] = health[i];
+                    } else {
+                        health[i] = bossHit(i);
                     }
                 } else { //Если критикал  хит не наносит  танк, то он как обычно бьет всех ЖИВЫХ по 50ед. урона
                     if (health[i] <= 0) {
@@ -51,12 +63,11 @@ public class Main {
                     }
                 }
                 if (health[i] > 0) { // если герой жив--->
-                    if (health[i] == health[4]) {// если не он сам не медик
+                    if (health[i] == health[4] && health[i] != health[6]) {// если не он сам не медик
                         health[i] = health[i];
-                    } else if(health[4]<=0){ //если еще жив медик
-                        health[i]=health[i];
-                    }
-                    else{
+                    } else if (health[4] <= 0) { //если еще жив медик
+                        health[i] = health[i];
+                    } else {
                         health[i] = health[i] + 15;//--->выполни лечение на 15ед.
                     }
                 }
@@ -67,12 +78,13 @@ public class Main {
     public static void printStatistics() {
         System.out.println("__________________________________");
         System.out.println("Boss health: " + health[0]);
-        System.out.println("Heroes health: "+(health[1]+health[2]+health[3]+health[4]+health[5]));
+        System.out.println("----------------------------------");
         System.out.println("Warrior health: " + health[1]);
         System.out.println("Magic health: " + health[2]);
         System.out.println("Kinetic health: " + health[3]);
         System.out.println("Doctor health: " + health[4]);
         System.out.println("Tank health: " + health[5]);
+        System.out.println("Lovkach health: " + health[6]);
         System.out.println("__________________________________");
     }
 
@@ -82,7 +94,7 @@ public class Main {
             System.out.println("Победили Герои!!!");
             return true;
         }
-        if (health[1] <= 0 && health[2] <= 0 && health[3] <= 0 && health[4] <= 0 && health[5] <= 0) {
+        if (health[1] <= 0 && health[2] <= 0 && health[3] <= 0 && health[4] <= 0 && health[5] <= 0 && health[6] <= 0) {
             System.out.println("Победил Босс!!!");
             return true;
         }
@@ -95,7 +107,7 @@ public class Main {
         if (hitTypes[0].equals(hitTypes[playerIndex])) {
             System.out.println(hitTypes[playerIndex] + " супер-удар " + " х" + randomNumber + " --->" + hits[playerIndex] * randomNumber);
             if (hitTypes[playerIndex].equals(hitTypes[5])) {
-                System.out.println("Танк забирает 25/55ед урона босса по игрокам себе.");
+                System.out.println("После супер-удара Танк забирает 25/55ед урона босса по игрокам себе, слабеет.");
             }
             return health[0] - hits[playerIndex] * randomNumber;
         } else {
@@ -109,7 +121,8 @@ public class Main {
 
     public static void changeBossDefence() {
         Random r = new Random();
-        int randomNum = r.nextInt(5) + 1;
+        int randomNum = r.nextInt(6) + 1;
         hitTypes[0] = hitTypes[randomNum];
     }
+
 }
