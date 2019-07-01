@@ -3,7 +3,7 @@ package com.company;
 import java.util.Random;
 
 public class Main {
-
+    public static int num = 0;
     public static int[] health = {1700, 220, 230, 240, 250, 600, 200, 225, 210};//0й элемент это босс
     public static int[] hits = {55, 20, 20, 20, 20, 5, 20, 20, 20};
     public static String[] hitTypes = {"Физический ", "физический ", "магический ", "ментальный", "медицинский",
@@ -26,66 +26,83 @@ public class Main {
     public static void round() {
         for (int i = 1; i <= 8; i++) {
             if (health[0] > 0) {
-                if (health[i] > 0) {//если герой жив--->
-                        int damagedHealthOfBoss = playerHit(i);//нанеси урон боссу
-                        if (damagedHealthOfBoss < 0) {//если после удара босс умер, посчитай что у него 0хп
-                            health[0] = 0;
-                        } else {                      //если босс Не умер, то жизнь=поврежденная жизнь
-                            health[0] = damagedHealthOfBoss;
-                        }
+                if (health[i] > 0) {//если герой жив для атаки--->
+                    int damagedHealthOfBoss = playerHit(i);
+                    if (damagedHealthOfBoss < 0) {
+                        health[0] = 0;
+                    } else {
+                        health[0] = damagedHealthOfBoss;
+                    }
                 } else { //если герой умер--->
-                        health[0] = health[0];//у босса жизнь не изменяется
+                    health[0] = health[0];
                 }
             }
         }
         if (health[0] > 0) { // если босс жив после атаки--->
             for (int i = 1; i <= 8; i++) {
                 if (hitTypes[0].equals(hitTypes[5])) {//случай супер-удара танка--->
-                        int tanksHelp = 25;
-                        if (health[i] == 5) {
-                            health[5] = bossHit(5) - tanksHelp * 7;//танк еще забирает часть урона(25 из 55) по другим себе
-                        } else {
-                            health[i] = bossHit(i) + tanksHelp;// и тогда босс наносит остальным по 10ед. урона
+                    int tanksHelp = 25;
+                    if (health[i] == 5) {
+                        switch (num) {//танк еще забирает часть урона(25 из 55) по другим себе
+                            case 0:
+                                health[5]=bossHit(5);
+                            case 1:
+                                health[5] = bossHit(5) - tanksHelp *1;
+                            case 2:
+                                health[5] = bossHit(5) - tanksHelp *2;
+                            case 3:
+                                health[5] = bossHit(5) - tanksHelp *3;
+                            case 4:
+                                health[5] = bossHit(5) - tanksHelp *4;
+                            case 5:
+                                health[5] = bossHit(5) - tanksHelp * 5;//танк еще забирает часть урона(25 из 55) по другим себе
+                            case 6:
+                                health[5] = bossHit(5) - tanksHelp *6;
+                            case 7:
+                                health[5] = bossHit(5) - tanksHelp *7;
                         }
+                    } else {
+                        health[i] = bossHit(i) + tanksHelp;// и тогда босс наносит остальным по 55-25ед. урона
+                    }
                 } else if (hitTypes[0].equals(hitTypes[6])) {//случай супер-удара ловкача--->
-                        if (health[i] <= 0) {
-                            health[i] = 0;
-                        }
-                        if (health[i] == health[6]) {//ловкач не получает урон от босса
-                            health[i] = health[i];
-                        } else {
-                            health[i] = bossHit(i);
-                        }
-                } else if (hitTypes[0].equals(hitTypes[7])) {//случай супер-удара берсерка--->
-                        if (health[i] <= 0) {
-                            health[i] = 0;
-                        }
-                        if (health[i] == health[7]) {//случай берсерка блокирует часть  урона от босса
-                            health[i] = bossHit(i) + 15;
-                        } else {
-                            health[i] = bossHit(i);
-                        }
-                } else if (hitTypes[0].equals(hitTypes[8])) {//случай удара тора--->
-                        if (health[i] <= 0) {
-                            health[i] = 0;
-                        }
+                    if (health[i] <= 0) {
+                        health[i] = 0;
+                    }
+                    if (health[i] == health[6]) {//ловкач не получает урон от босса
+                        health[i] = health[i];
+                    } else {
                         health[i] = bossHit(i);
+                    }
+                } else if (hitTypes[0].equals(hitTypes[7])) {//случай супер-удара берсерка--->
+                    if (health[i] <= 0) {
+                        health[i] = 0;
+                    }
+                    if (health[i] == health[7]) {//случай берсерка блокирует часть  урона от босса
+                        health[i] = bossHit(i) + 15;
+                    } else {
+                        health[i] = bossHit(i);
+                    }
+                } else if (hitTypes[0].equals(hitTypes[8])) {//случай удара тора--->
+                    if (health[i] <= 0) {
+                        health[i] = 0;
+                    }
+                    health[i] = bossHit(i);
 
                 } else { //Если критикал  хит наносит  ни танк, ни ловкач, ни берсерк, ни тор, то он как обычно бьет всех ЖИВЫХ по 50ед. урона
-                        if (health[i] <= 0) {
-                            health[i] = 0;
-                        } else {
-                            health[i] = bossHit(i);
-                        }
+                    if (health[i] <= 0) {
+                        health[i] = 0;
+                    } else {
+                        health[i] = bossHit(i);
+                    }
                 }
                 if (health[i] > 0) { // если герой жив--->
-                        if (health[i] == health[4]) {// если он сам не медик
-                            health[i] = health[i];
-                        } else if (health[4] <= 0) { //если еще жив медик
-                            health[i] = health[i];
-                        } else {
-                            health[i] = health[i] + 15;//--->выполни лечение на 15ед.
-                        }
+                    if (health[i] == health[4]) {// если он сам не медик
+                        health[i] = health[i];
+                    } else if (health[4] <= 0) { //если еще жив медик
+                        health[i] = health[i];
+                    } else {
+                        health[i] = health[i] + 15;//--->выполни лечение на 15ед.
+                    }
                 }
             }
         }
@@ -104,6 +121,7 @@ public class Main {
         System.out.println("Lovkach health: " + health[6]);
         System.out.println("Berserk health: " + health[7]);
         System.out.println("Tor health: " + health[8]);
+        checkHeroes(health);
         System.out.println("__________________________________");
     }
 
@@ -159,6 +177,18 @@ public class Main {
         Random r = new Random();
         int randomNum = r.nextInt(8) + 1;
         hitTypes[0] = hitTypes[randomNum];
+    }
+
+    public static int checkHeroes(int[] health) {
+        int num = 0;
+        for (int i = 1; i < 8; i++) {
+            if (health[i] > 0) {
+                num++;
+            }
+
+        }
+        System.out.println("Живых героев: " + (num-1)+" и +танк");
+        return num;
     }
 
 }
