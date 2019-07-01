@@ -38,28 +38,37 @@ public class Main {
                 }
             }
         }
+
         if (health[0] > 0) { // если босс жив после атаки--->
             for (int i = 1; i <= 8; i++) {
                 if (hitTypes[0].equals(hitTypes[5])) {//случай супер-удара танка--->
                     int tanksHelp = 25;
-                    if (health[i] == 5) {
+                    if (health[i] == health[5]) {
                         switch (num) {//танк еще забирает часть урона(25 из 55) по другим себе
                             case 0:
                                 health[5]=bossHit(5);
+                                break;
                             case 1:
-                                health[5] = bossHit(5) - tanksHelp *1;
+                                health[5] = bossHit(5) - (tanksHelp *1);
+                                break;
                             case 2:
-                                health[5] = bossHit(5) - tanksHelp *2;
+                                health[5] = bossHit(5) - (tanksHelp *2);
+                                break;
                             case 3:
-                                health[5] = bossHit(5) - tanksHelp *3;
+                                health[5] = bossHit(5) - (tanksHelp *3);
+                                break;
                             case 4:
-                                health[5] = bossHit(5) - tanksHelp *4;
+                                health[5] = bossHit(5) - (tanksHelp *4);
+                                break;
                             case 5:
-                                health[5] = bossHit(5) - tanksHelp * 5;//танк еще забирает часть урона(25 из 55) по другим себе
+                                health[5] = bossHit(5) - (tanksHelp * 5);//танк еще забирает часть урона(25 из 55) по другим себе
+                                break;
                             case 6:
-                                health[5] = bossHit(5) - tanksHelp *6;
+                                health[5] = bossHit(5) - (tanksHelp *6);
+                                break;
                             case 7:
-                                health[5] = bossHit(5) - tanksHelp *7;
+                                health[5] = bossHit(5) - (tanksHelp *7);
+                                break;
                         }
                     } else {
                         health[i] = bossHit(i) + tanksHelp;// и тогда босс наносит остальным по 55-25ед. урона
@@ -88,21 +97,15 @@ public class Main {
                     }
                     health[i] = bossHit(i);
 
-                } else { //Если критикал  хит наносит  ни танк, ни ловкач, ни берсерк, ни тор, то он как обычно бьет всех ЖИВЫХ по 50ед. урона
+                } else { //Если критикал  хит наносит  ни танк, ни ловкач, ни берсерк, ни тор, то он как обычно бьет всех ЖИВЫХ по 55ед. урона
                     if (health[i] <= 0) {
                         health[i] = 0;
                     } else {
                         health[i] = bossHit(i);
                     }
                 }
-                if (health[i] > 0) { // если герой жив--->
-                    if (health[i] == health[4]) {// если он сам не медик
-                        health[i] = health[i];
-                    } else if (health[4] <= 0) { //если еще жив медик
-                        health[i] = health[i];
-                    } else {
-                        health[i] = health[i] + 15;//--->выполни лечение на 15ед.
-                    }
+                if (health[i] > 0&&health[4]>0&&health[i]!=health[4]) { // если герой жив--->
+                    health[i] = health[i] + 15;//--->выполни лечение на 15ед.
                 }
             }
         }
@@ -146,7 +149,7 @@ public class Main {
         if (hitTypes[0].equals(hitTypes[playerIndex])) {
             System.out.println(hitTypes[playerIndex] + " супер-удар " + " х" + randomNumber + " --->" + hits[playerIndex] * randomNumber);
             if (hitTypes[playerIndex].equals(hitTypes[5])) {
-                System.out.println("После супер-удара Танк забирает 25/55ед урона босса по игрокам себе, слабеет.");
+                System.out.println("После супер-удара Танк забирает 25/55ед урона босса по живым игрокам себе.");
             }
             if (hitTypes[playerIndex].equals(hitTypes[6])) {
                 System.out.println("После супер-удара Ловкач уворачивается от урона босса.");
@@ -183,11 +186,12 @@ public class Main {
         int num = 0;
         for (int i = 1; i < 8; i++) {
             if (health[i] > 0) {
+                if(i==5)continue;
                 num++;
             }
 
         }
-        System.out.println("Живых героев: " + (num-1)+" и +танк");
+        System.out.println("Живых героев: " + (num)+" и +танк");
         return num;
     }
 
